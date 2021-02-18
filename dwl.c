@@ -1910,9 +1910,16 @@ setlayout(const Arg *arg)
 {
 	if (!arg || !arg->v || arg->v != selmon->lt[selmon->sellt])
 		selmon->sellt ^= 1;
-	if (arg && arg->v)
+	if (arg && arg->v) {
+		if (arg->v) { // setting a layout != floating
+			Client *c;
+			wl_list_for_each(c, &clients, link) {
+				setfloating(c, 0);
+			}
+		}
 		selmon->lt[selmon->sellt] = (Layout *)arg->v;
-	/* TODO change layout symbol? */
+		/* TODO change layout symbol? */
+	}
 	arrange(selmon);
 }
 
